@@ -1,8 +1,6 @@
 package client;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -29,9 +27,13 @@ public class EchoClient {
             OutputStream os = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(os);
 
-            try(sc; writer) {
+            InputStream is = socket.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+            Scanner scReader = new Scanner(isr);
+
+            try(sc; writer; scReader) {
                 while (true) {
-                     String message = sc.nextLine();
+                     String message = sc.nextLine().strip();
                      writer.write(message);
                      writer.write(System.lineSeparator());
                      writer.flush();
@@ -39,6 +41,9 @@ public class EchoClient {
                      if ("bye".equalsIgnoreCase(message)) {
                          return;
                      }
+
+                     String reply = scReader.nextLine();
+                     System.out.printf("Server: %s%n", reply);
                 }
             }
         } catch (NoSuchElementException e) {
@@ -48,4 +53,5 @@ public class EchoClient {
             e.printStackTrace();
         }
     }
+
 }

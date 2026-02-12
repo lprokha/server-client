@@ -32,14 +32,14 @@ public class EchoServer {
         InputStream is = socket.getInputStream();
         InputStreamReader isr = new InputStreamReader(is, "UTF-8");
         Scanner sc = new Scanner(isr);
+
         OutputStream os = socket.getOutputStream();
         PrintWriter writer = new PrintWriter(os);
-
 
         try (sc; writer) {
             while (true) {
                 String message = sc.nextLine().strip();
-                System.out.printf("Got: %s%n", message);
+                System.out.printf("Client: %s%n", message);
 
                 if ("bye".equalsIgnoreCase(message)) {
                     System.out.println("Bye bye!");
