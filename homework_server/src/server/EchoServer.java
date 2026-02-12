@@ -1,8 +1,6 @@
 package server;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.NoSuchElementException;
@@ -33,8 +31,12 @@ public class EchoServer {
     private void handle(Socket socket) throws IOException {
         InputStream is = socket.getInputStream();
         InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+        Scanner sc = new Scanner(isr);
+        OutputStream os = socket.getOutputStream();
+        PrintWriter writer = new PrintWriter(os);
 
-        try (Scanner sc = new Scanner(isr)) {
+
+        try (sc; writer) {
             while (true) {
                 String message = sc.nextLine().strip();
                 System.out.printf("Got: %s%n", message);
@@ -43,6 +45,13 @@ public class EchoServer {
                     System.out.println("Bye bye!");
                     return;
                 }
+
+                String reply = new StringBuilder(message).reverse().toString();
+                writer.write(reply);
+                writer.write(System.lineSeparator());
+                writer.flush();
+
+
             }
         } catch (NoSuchElementException e) {
             System.out.println("Client dropped connection!");
