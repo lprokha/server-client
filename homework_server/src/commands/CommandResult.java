@@ -13,7 +13,7 @@ public class CommandResult {
         return reply;
     }
 
-    public boolean ShouldClose() {
+    public boolean shouldClose() {
         return shouldClose;
     }
 }
